@@ -1,0 +1,5 @@
+<!-- Place inside the endpoint's <ossec_config> element. -->
+<localfile>
+  <log_format>syslog</log_format>
+  <location>/var/log/auth.log</location>
+</localfile>
