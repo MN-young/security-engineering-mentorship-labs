@@ -1,0 +1,31 @@
+<!--
+  Week 1 authentication detections.
+  Deploy inside the Wazuh manager's local rules configuration and validate
+  with wazuh-analysisd before restarting the manager.
+-->
+<group name="local,authentication_failed,">
+
+  <!-- Linux: nonexistent-user SSH failure, scoped to the Linux endpoint. -->
+  <rule id="100002" level="5">
+    <if_sid>5710</if_sid>
+    <hostname>wazuh-linux-agent</hostname>
+    <description>SSH failed logon attempt detected</description>
+    <group>authentication_failed,linux,</group>
+  </rule>
+
+  <!-- Windows: unknown user or bad-password logon failure (Event ID 4625). -->
+  <rule id="100003" level="5">
+    <if_sid>60122</if_sid>
+    <description>Windows failed logon attempt detected (4625)</description>
+    <group>authentication_failed,windows,</group>
+  </rule>
+
+  <!-- Docker host: nonexistent-user SSH failure, scoped to the host. -->
+  <rule id="100004" level="5">
+    <if_sid>5710</if_sid>
+    <hostname>wazuh-docker-agent</hostname>
+    <description>Docker host: SSH failed logon attempt detected</description>
+    <group>authentication_failed,docker_host,</group>
+  </rule>
+
+</group>
