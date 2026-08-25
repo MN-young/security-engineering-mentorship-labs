@@ -1,0 +1,5 @@
+<!-- Add inside the endpoint's <ossec_config> element. -->
+<localfile>
+  <log_format>json</log_format>
+  <location>/var/log/suricata/eve.json</location>
+</localfile>
