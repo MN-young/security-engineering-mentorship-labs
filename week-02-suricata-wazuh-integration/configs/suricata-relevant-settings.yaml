@@ -1,0 +1,16 @@
+# Verified excerpts from the Week 2 Suricata configuration.
+# This is not a complete replacement for /etc/suricata/suricata.yaml.
+
+vars:
+  address-groups:
+    HOME_NET: "[192.168.0.0/16,10.0.0.0/8,172.16.0.0/12]"
+    EXTERNAL_NET: "!$HOME_NET"
+
+af-packet:
+  - interface: ens33
+
+default-rule-path: /var/lib/suricata/rules
+
+rule-files:
+  - suricata.rules
+  - local.rules
