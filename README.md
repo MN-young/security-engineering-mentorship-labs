@@ -10,18 +10,23 @@ Each project records the architecture, implementation, validation evidence, dete
 | --- | --- | --- | --- |
 | 1 | [Wazuh Multi-Agent SIEM and Detection Engineering Lab](./week-01-wazuh-multi-agent-lab/README.md) | SIEM deployment, endpoint monitoring, FIM, custom detections | Complete |
 | 2 | [Suricata and Wazuh Network Detection](./week-02-suricata-wazuh-integration/README.md) | Network IDS integration, internal SYN-scan detection, SIEM validation | Complete |
-| 3–8 | Additional security engineering labs | To be documented | Planned |
+| 3 | [Wazuh, TheHive and Cortex Case Management](./week-03-wazuh-thehive-cortex-case-management/README.md) | Automated case creation, observable enrichment, SOAR-style orchestration | Complete |
+| 4–8 | Additional security engineering labs | To be documented | Planned |
 
 ## Technologies and practices
 
 - Wazuh
 - Suricata
+- TheHive and Cortex
+- VirusTotal enrichment
 - Linux and Windows administration
 - Docker
 - SIEM and endpoint monitoring
 - File Integrity Monitoring (FIM)
 - Network intrusion detection
 - Detection engineering
+- Case management and alert enrichment
+- Security API integration and Python automation
 - Log and alert analysis
 - Controlled validation with Nmap
 - Technical troubleshooting and documentation
