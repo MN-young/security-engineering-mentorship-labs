@@ -9,6 +9,9 @@
 *.keystore
 authd.pass
 wazuh-passwords.txt
+.thehive_api_key
+*api_key*
+*api-key*
 
 # Logs and generated output
 *.log
@@ -19,4 +22,3 @@ wazuh-passwords.txt
 Thumbs.db
 *.swp
 *~
-
