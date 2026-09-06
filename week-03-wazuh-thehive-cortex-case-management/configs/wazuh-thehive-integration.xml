@@ -1,0 +1,6 @@
+<!-- Add inside <ossec_config> on the Wazuh manager. -->
+<integration>
+  <name>custom-thehive</name>
+  <rule_id>86601</rule_id>
+  <alert_format>json</alert_format>
+</integration>
