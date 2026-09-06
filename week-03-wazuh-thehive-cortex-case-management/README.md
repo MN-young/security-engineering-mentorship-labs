@@ -154,7 +154,17 @@ The helper then submitted a `VirusTotal_GetReport_3_1` job through the TheHive-C
 
 ![Cortex success for the automatically created IP observable](./screenshots/results/06-cortex-automated-enrichment-job.png)
 
-The TheHive observable page was captured before its report panel refreshed, so it displays no report in that view. The matching Cortex Jobs History provides the completion evidence. The EICAR hash test above separately proves that a full VirusTotal report can return to TheHive.
+The Case `#214` observable page was captured before its report panel refreshed, so it displays no report in that view. The matching Cortex Jobs History provides the completion evidence.
+
+An earlier automatically created Wazuh case, Case `#199`, was captured after the enrichment result returned. Its source-IP observable displays the VirusTotal summary tags inside the same case:
+
+![VirusTotal summary tags on an automatically created case observable](./screenshots/results/07-thehive-automated-case-enrichment-tags.png)
+
+The full VirusTotal analysis report was also opened from that observable inside Case `#199`:
+
+![VirusTotal analysis report attached to an automatically created TheHive case](./screenshots/results/08-thehive-automated-case-virustotal-report.png)
+
+Because the indicator is an RFC1918 private lab address, the `0/91` reputation result is expected. The evidence validates the orchestration path—automatic case creation, observable creation, analyzer execution, and report return—not malicious reputation for the private IP. The EICAR hash test above remains the stronger malicious-indicator enrichment example.
 
 ## Success criteria
 
@@ -237,3 +247,4 @@ The exact deployed scripts contained environment-specific values and underwent l
 ## What I learned
 
 End-to-end automation is a sequence of independently testable contracts. The alert must contain the right fields, the bridge must authenticate, the case API must accept the payload, the observable must become queryable, and Cortex must receive a valid analyzer request. Verifying each boundary separately made the final workflow reliable enough to demonstrate and revealed the next engineering priorities: precise filtering, deduplication, bounded retries, least privilege, and safer secret management.
+
