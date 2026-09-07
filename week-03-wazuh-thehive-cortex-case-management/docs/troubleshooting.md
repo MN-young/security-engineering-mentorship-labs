@@ -200,8 +200,6 @@ TheHive consequently displayed:
 No report(s) available
 ```
 
-![VirusTotal connectivity failure during validation](../screenshots/troubleshooting/02-virustotal-connectivity-failure.jpeg)
-
 ### Investigation
 
 The Wazuh manager could not reach either its VMware NAT gateway at `192.168.244.2` or the external test address `8.8.8.8`. On the Windows host, VMnet8 was Up and the VMware DHCP and NAT services appeared Running, so their visible service state alone did not prove that the NAT path was healthy.
@@ -290,4 +288,3 @@ The final evidence correlates the integration log, structured Case `#216`, its o
 ### Final lesson
 
 The most reliable troubleshooting method was to verify one boundary at a time and correlate the result across network reachability, service logs, API status codes, TheHive objects, Cortex job history, and the returned enrichment report.
-
