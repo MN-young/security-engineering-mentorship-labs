@@ -26,7 +26,6 @@ The public evidence set was reduced from the full troubleshooting history to a c
 | File | Evidence |
 | --- | --- |
 | `troubleshooting/01-integration-retry-and-permission-errors.png` | Authorization, readiness, retry, and execution problems before automation succeeded |
-| `troubleshooting/02-virustotal-connectivity-failure.jpeg` | Temporary VirusTotal HTTPS failure during the VMware NAT/DHCP outage; troubleshooting evidence only |
 
 ## Evidence interpretation
 
@@ -35,7 +34,6 @@ The public evidence set was reduced from the full troubleshooting history to a c
 - Results `09`–`14` are the authoritative final evidence for the fresh post-recovery run.
 - Case `#216` proves automatic case creation, automatic observable creation, successful Cortex execution, and the VirusTotal report returned to TheHive.
 - The private IP observable validates orchestration; `0/89` is expected and should not be interpreted as malicious reputation.
-- The VirusTotal connection-error image documents a resolved network outage and is not presented as the final result.
 
 ## Excluded material
 
@@ -47,4 +45,3 @@ The following categories were deliberately omitted:
 - duplicate screenshots,
 - failed states without a distinct troubleshooting lesson,
 - unrelated setup and social-post drafts.
-
