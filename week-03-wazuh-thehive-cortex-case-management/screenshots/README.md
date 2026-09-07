@@ -8,12 +8,6 @@ The public evidence set was reduced from the full troubleshooting history to a c
 | --- | --- |
 | `results/01-cortex-hash-analyzer-jobs.png` | Successful VirusTotal analyzer jobs for the known EICAR hash |
 | `results/02-virustotal-eicar-enrichment.png` | Detailed VirusTotal report returned for the EICAR test |
-| `results/03-wazuh-thehive-integration-success.png` | Earlier automation log showing case, observable, and Cortex request milestones |
-| `results/04-thehive-automated-case-214.png` | Earlier structured TheHive case created from Wazuh rule `86601` |
-| `results/05-thehive-automated-observable.png` | Source IP automatically added to earlier Case `#214` |
-| `results/06-cortex-automated-enrichment-job.png` | Earlier Cortex job evidence for the automatically created observable |
-| `results/07-thehive-automated-case-enrichment-tags.png` | Earlier automatically created case with returned VirusTotal tags |
-| `results/08-thehive-automated-case-virustotal-report.png` | Earlier VirusTotal report opened from an automated case |
 | `results/09-wazuh-suricata-alert-details.jpeg` | Suricata SID `1000001` detection details in Wazuh |
 | `results/10-wazuh-rule-86601-mapping.jpeg` | Wazuh rule `86601`, `eve.json`, and decoded Suricata context |
 | `results/11-thehive-automated-case-216.jpeg` | Authoritative final Case `#216`, automatically created by Wazuh Integration |
@@ -30,8 +24,7 @@ The public evidence set was reduced from the full troubleshooting history to a c
 ## Evidence interpretation
 
 - Results `01`–`02` independently validate the analyzer with a known EICAR hash.
-- Results `03`–`08` preserve earlier implementation and validation milestones.
-- Results `09`–`14` are the authoritative final evidence for the fresh post-recovery run.
+- Results `09`–`14` are the authoritative evidence for the fresh post-recovery run.
 - Case `#216` proves automatic case creation, automatic observable creation, successful Cortex execution, and the VirusTotal report returned to TheHive.
 - The private IP observable validates orchestration; `0/89` is expected and should not be interpreted as malicious reputation.
 
