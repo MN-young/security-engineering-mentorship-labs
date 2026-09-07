@@ -184,23 +184,51 @@ CORTEX_SUCCESS
 
 A correct script can still fail at the operating-system boundary. Ownership, mode, interpreter, and service identity are part of the integration.
 
-## 9. VM networking and agent interruptions
+## 9. VMware NAT/DHCP outage blocked VirusTotal
 
 ### Problem
 
-VMware NAT and agent connectivity interruptions temporarily disconnected endpoints and blocked external analyzer access.
+The automation already created the TheHive case, added the observable, and launched the Cortex job, but the analyzer could not retrieve a report. Cortex recorded:
+
+```text
+Cannot connect to host www.virustotal.com:443
+```
+
+TheHive consequently displayed:
+
+```text
+No report(s) available
+```
+
+![VirusTotal connectivity failure during validation](../screenshots/troubleshooting/02-virustotal-connectivity-failure.jpeg)
 
 ### Investigation
 
-VM network adapters, DHCP, NAT service state, agent status, DNS resolution, and HTTPS reachability were checked.
+The Wazuh manager could not reach either its VMware NAT gateway at `192.168.244.2` or the external test address `8.8.8.8`. On the Windows host, VMnet8 was Up and the VMware DHCP and NAT services appeared Running, so their visible service state alone did not prove that the NAT path was healthy.
 
 ### Fix
 
-The VMware NAT service and affected agents were restored before continuing validation.
+Both VMware networking services were restarted on the Windows host:
+
+```powershell
+Restart-Service VMnetDHCP -Force
+Restart-Service 'VMware NAT Service' -Force
+```
+
+### Validation
+
+After the restart, gateway connectivity, internet connectivity, VirusTotal DNS resolution, and HTTPS access were confirmed. DNS and HTTPS connectivity were also confirmed from inside the Cortex container.
+
+A fresh Nmap test then created TheHive Case `#216`, added the IP observable automatically, executed `VirusTotal_GetReport_3_1` through Cortex, and returned the report to TheHive with:
+
+```text
+VT:GetReport="12 resolution(s)"
+VT:GetReport="0/89"
+```
 
 ### Lesson learned
 
-Confirm lab transport before changing application code in response to a network failure.
+A service can report Running while its network path is not functioning correctly. Validate the gateway, external reachability, DNS, HTTPS, and container egress before changing analyzer or integration code.
 
 ## 10. Broad rule trigger caused case flooding
 
@@ -235,24 +263,31 @@ Automation quality is measured by useful outcomes, not only by successful HTTP r
 
 ## 11. Final validation
 
-The final run tied the same alert workflow together:
+After restoring VMware NAT/DHCP connectivity, a fresh run tied the same workflow together:
 
 ```text
+Nmap
+      ↓
 Suricata SID 1000001
       ↓
 Wazuh rule 86601
       ↓
-TheHive Case #214 created
+Automatic TheHive Case #216
       ↓
-Source IP observable created
+Automatic source-IP observable
       ↓
-VirusTotal_GetReport_3_1 submitted
+Automatic VirusTotal_GetReport_3_1 execution
       ↓
-Cortex job Success
+Cortex status: Success
+      ↓
+VirusTotal report returned to TheHive
+      ↓
+VT:GetReport="12 resolution(s)" and VT:GetReport="0/89"
 ```
 
-The case preserved the Wazuh and Suricata context, and the final integration log recorded successful case creation, helper launch, observable creation, and Cortex submission.
+The final evidence correlates the integration log, structured Case `#216`, its observable tags, and the Cortex job report. This confirms analyzer execution and report return—not merely job submission.
 
 ### Final lesson
 
-The most reliable troubleshooting method was to verify one boundary at a time and correlate the result across service logs, API status codes, TheHive objects, and Cortex job history.
+The most reliable troubleshooting method was to verify one boundary at a time and correlate the result across network reachability, service logs, API status codes, TheHive objects, Cortex job history, and the returned enrichment report.
+
