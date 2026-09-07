@@ -2,10 +2,10 @@
 
 ## Purpose
 
-The Week 3 workflow converts a network detection into a managed case and then enriches an indicator associated with that case.
+The Week 3 workflow converts controlled Nmap activity into a managed case and automatically returns VirusTotal enrichment to that case.
 
 ```text
-Controlled traffic
+Nmap
       ↓
 Suricata detection (SID 1000001)
       ↓
@@ -13,15 +13,17 @@ Wazuh alert (rule 86601)
       ↓
 custom-thehive
       ↓
-TheHive case
+Automatic TheHive case
       ↓
 thehive-enrich
       ↓
-TheHive observable
+Automatic IP observable
       ↓
-Cortex analyzer
+Automatic Cortex execution
       ↓
-VirusTotal result
+VirusTotal enrichment
+      ↓
+Report returned to TheHive
 ```
 
 ## Component responsibilities
@@ -45,18 +47,18 @@ The custom Wazuh integration receives the JSON alert path from Wazuh, extracts t
 
 ### TheHive
 
-TheHive stores the investigation as a case. The final case preserved the detection title, rule and signature IDs, agent, source and destination addresses, timestamp, and workflow tags.
+TheHive stores the investigation as a case. The authoritative final Case `#216` preserved the detection title, rule and signature IDs, agent, source and destination addresses, timestamp, and workflow tags.
 
 ### `thehive-enrich`
 
-The enrichment helper receives the new case context, adds the source address as an IP observable, waits for it to become available to the connector, and submits the Cortex job.
+The enrichment helper receives the new case context, adds the source address as an IP observable, waits for it to become available to the connector, and requests the Cortex analysis.
 
 ### Cortex and VirusTotal
 
 Cortex executes `VirusTotal_GetReport_3_1`. The lab used two validation paths:
 
 1. A known EICAR SHA-256 test hash, which returned a full report to TheHive.
-2. The private source IP from the automatically created case, which proved automatic job submission and completion.
+2. The private source IP from automatic Case `#216`, for which Cortex executed the analyzer and returned the report to TheHive.
 
 The private-IP job validates orchestration, not public reputation value.
 
@@ -77,7 +79,7 @@ Wazuh alert → TheHive case
 The stretch goal joined them:
 
 ```text
-Wazuh alert → case → observable → Cortex job
+Wazuh alert → case → observable → Cortex → VirusTotal → report returned to TheHive
 ```
 
 This order isolated faults and prevented an analyzer issue from being mistaken for a Wazuh integration issue.
@@ -101,3 +103,4 @@ Secrets must not be embedded in screenshots, source files, command history, or G
 5. Stop retrying on authorization errors until permissions are corrected.
 6. Record correlation IDs across Wazuh, TheHive, and Cortex.
 7. Monitor integration failures separately from detection alerts.
+
