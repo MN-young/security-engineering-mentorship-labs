@@ -26,8 +26,8 @@ Verified responsibilities:
 1. Add the source IP as an observable to the created case.
 2. Parse the observable ID from the API response.
 3. Retry briefly while the new observable becomes available to the connector.
-4. Submit `VirusTotal_GetReport_3_1` through the Cortex connector.
-5. Record observable and Cortex submission outcomes in the integration log.
+4. Request `VirusTotal_GetReport_3_1` through the Cortex connector.
+5. Record observable creation and Cortex request outcomes in the integration log.
 
 ## Why the deployed source is not reproduced here
 
@@ -63,3 +63,17 @@ curl --fail-with-body \
 ```
 
 Real deployments should avoid exporting long-lived secrets into shell history and should use a dedicated secret-management mechanism.
+
+## Final validation boundary
+
+An HTTP `201` from the connector proves that the analyzer request was accepted; it does not by itself prove enrichment completed. The authoritative final run therefore also verified Cortex Job Details and the resulting TheHive observable.
+
+For Case `#216`, `VirusTotal_GetReport_3_1` executed with status `Success`, returned an actual report payload, and populated TheHive with:
+
+```text
+VT:GetReport="12 resolution(s)"
+VT:GetReport="0/89"
+```
+
+This repository treats the returned TheHive report—not submission alone—as the completion boundary.
+
