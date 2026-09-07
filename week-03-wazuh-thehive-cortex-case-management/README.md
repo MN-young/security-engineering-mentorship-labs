@@ -7,19 +7,21 @@ Week 3 turned the Week 2 network detection into a case-management and enrichment
 The core objective and stretch goal were both validated:
 
 ```text
-Suricata alert
+Nmap test
+      ↓
+Suricata SID 1000001
       ↓
 Wazuh rule 86601
       ↓
-custom-thehive integration
+Automatic TheHive case
       ↓
-TheHive case
+Automatic IP observable
       ↓
-IP observable
+Automatic Cortex execution
       ↓
-Cortex VirusTotal analyzer
+VirusTotal enrichment
       ↓
-Enrichment job completed
+Report returned to TheHive
 ```
 
 The most important engineering lesson was that a working integration is not automatically a well-tuned one. Authentication, permissions, asynchronous object availability, helper execution, error handling, and case deduplication all affected the result.
@@ -33,7 +35,7 @@ The most important engineering lesson was that a working integration is not auto
 - Reuse the Week 2 Suricata port-scan detection as a live trigger.
 - Automatically create a meaningful TheHive case from the alert.
 - Enrich an indicator associated with that case.
-- Stretch goal: automatically create the observable and submit the Cortex job during case creation.
+- Stretch goal: automatically create the observable, execute the Cortex analyzer, and return the enrichment report to TheHive during case creation.
 
 ## Lab components
 
@@ -43,9 +45,9 @@ The most important engineering lesson was that a working integration is not auto
 | Wazuh | Processed the Suricata event as rule `86601` and invoked the integration |
 | `custom-thehive` | Parsed the Wazuh alert and created a structured TheHive case |
 | TheHive | Managed the investigation case and its observables |
-| `thehive-enrich` | Added the observable and submitted the analyzer job |
-| Cortex | Executed `VirusTotal_GetReport_3_1` |
-| VirusTotal | Returned indicator reputation and enrichment data |
+| `thehive-enrich` | Added the observable and requested the Cortex analysis |
+| Cortex | Executed `VirusTotal_GetReport_3_1` and returned the job report |
+| VirusTotal | Returned resolution and reputation data to TheHive |
 
 TheHive and Cortex were deployed with Docker Compose alongside their supporting lab services. Existing Wazuh components from Weeks 1–2 remained the detection source.
 
@@ -56,18 +58,35 @@ flowchart LR
     A["Controlled Nmap test"] --> B["Suricata<br/>SID 1000001"]
     B --> C["Wazuh<br/>Rule 86601"]
     C --> D["custom-thehive"]
-    D --> E["TheHive case"]
-    E --> F["IP observable"]
-    F --> G["thehive-enrich"]
+    D --> E["Automatic TheHive case"]
+    E --> F["thehive-enrich"]
+    F --> G["Automatic IP observable"]
     G --> H["Cortex<br/>VirusTotal_GetReport_3_1"]
-    H --> I["Enrichment result"]
+    H --> I["VirusTotal enrichment"]
+    I --> J["Report returned to TheHive"]
 ```
 
 See [the architecture document](./docs/architecture.md) for component boundaries, identifiers, and trust considerations.
 
 ## Final end-to-end result
 
-The final integration log recorded all four automation milestones for the same workflow:
+After a temporary network interruption was resolved, a fresh Nmap validation produced the authoritative final workflow:
+
+```text
+Nmap → Suricata SID 1000001 → Wazuh rule 86601
+     → automatic TheHive Case #216
+     → automatic IP observable
+     → automatic VirusTotal_GetReport_3_1 execution
+     → VirusTotal report returned to TheHive
+```
+
+Wazuh mapped the Suricata detection to rule `86601`:
+
+![Wazuh Suricata alert details](./screenshots/results/09-wazuh-suricata-alert-details.jpeg)
+
+![Wazuh rule 86601 mapping](./screenshots/results/10-wazuh-rule-86601-mapping.jpeg)
+
+The integration log recorded the correlated automation milestones for Case `#216`:
 
 ```text
 SUCCESS rule=86601 HTTP=201
@@ -76,17 +95,24 @@ OBSERVABLE_SUCCESS
 CORTEX_SUCCESS ... HTTP=201
 ```
 
-![Wazuh integration log showing case, observable, and Cortex success](./screenshots/results/03-wazuh-thehive-integration-success.png)
+![Final automation log for Case 216](./screenshots/results/14-final-automation-success-log.jpeg)
 
-TheHive Case `#214` was created by the Wazuh integration and titled:
+TheHive Case `#216` was created by **Wazuh Integration** and preserved the Wazuh rule ID, Suricata SID, agent, source, destination, and timestamp.
+
+![Automatically created TheHive Case 216](./screenshots/results/11-thehive-automated-case-216.jpeg)
+
+The source IP was added automatically as an observable. Its TheHive report contains the returned VirusTotal tags:
 
 ```text
-Wazuh Alert 86601 - LOCAL TCP Port Scan Detected
+VT:GetReport="12 resolution(s)"
+VT:GetReport="0/89"
 ```
 
-The case description preserved the Wazuh rule ID, Suricata SID, signature, agent, source, destination, and timestamp.
+![VirusTotal enrichment tags returned to Case 216](./screenshots/results/12-thehive-case-216-enrichment-tags.jpeg)
 
-![Automatically created TheHive case 214](./screenshots/results/04-thehive-automated-case-214.png)
+Cortex Job Details confirms that `VirusTotal_GetReport_3_1` executed successfully for the same IP and returned an actual report payload.
+
+![Successful Cortex VirusTotal report for Case 216](./screenshots/results/13-cortex-virustotal-report-success.jpeg)
 
 ## Implementation
 
@@ -144,36 +170,29 @@ The automatically created case included:
 - event timestamp,
 - `wazuh`, `suricata`, and `automated-case` tags.
 
-### 5. Add an observable and submit a Cortex job
+### 5. Add the observable, execute Cortex, and return the report
 
-The enrichment helper added the source IP as an observable to the newly created case.
+The enrichment helper added the source IP to the newly created case as an observable, waited for the object to become available, and requested `VirusTotal_GetReport_3_1` through the TheHive-Cortex connector.
 
-![Automatically created IP observable in TheHive case 214](./screenshots/results/05-thehive-automated-observable.png)
+The final Case `#216` run proves more than job submission:
 
-The helper then submitted a `VirusTotal_GetReport_3_1` job through the TheHive-Cortex connector. Cortex Jobs History recorded a successful run for the same IP observable.
+- the observable was created automatically,
+- Cortex executed the VirusTotal analyzer successfully,
+- the job returned an actual report payload,
+- TheHive received the enrichment and displayed `12 resolution(s)` and `0/89` tags.
 
-![Cortex success for the automatically created IP observable](./screenshots/results/06-cortex-automated-enrichment-job.png)
+Because the indicator is an RFC1918 private lab (lab-only) address, the `0/89` reputation result is expected. The result validates orchestration and report return; the independent EICAR hash test remains the stronger malicious-indicator enrichment example.
 
-The Case `#214` observable page was captured before its report panel refreshed, so it displays no report in that view. The matching Cortex Jobs History provides the completion evidence.
-
-An earlier automatically created Wazuh case, Case `#199`, was captured after the enrichment result returned. Its source-IP observable displays the VirusTotal summary tags inside the same case:
-
-![VirusTotal summary tags on an automatically created case observable](./screenshots/results/07-thehive-automated-case-enrichment-tags.png)
-
-The full VirusTotal analysis report was also opened from that observable inside Case `#199`:
-
-![VirusTotal analysis report attached to an automatically created TheHive case](./screenshots/results/08-thehive-automated-case-virustotal-report.png)
-
-Because the indicator is an RFC1918 private lab address, the `0/91` reputation result is expected. The evidence validates the orchestration path—automatic case creation, observable creation, analyzer execution, and report return—not malicious reputation for the private IP. The EICAR hash test above remains the stronger malicious-indicator enrichment example.
+Earlier Cases `#199` and `#214` remain in the evidence folder as implementation-progress records. Case `#216` is the authoritative final validation because it correlates case creation, observable creation, successful analyzer execution, and the returned report after network recovery.
 
 ## Success criteria
 
 | Requirement | Result | Evidence |
 | --- | --- | --- |
-| A live Wazuh alert automatically creates a TheHive case | Complete | Integration HTTP `201` and Case `#214` |
-| A Cortex analyzer enriches an indicator from the case workflow | Complete | Observable creation and Cortex job `Success` |
-| Record the alert → case → enrichment pipeline | Complete | Final log, case, observable, and job screenshots |
-| Stretch: auto-trigger enrichment during case creation | Complete | `ENRICH_HELPER_LAUNCHED`, `OBSERVABLE_SUCCESS`, and `CORTEX_SUCCESS` |
+| A live Wazuh alert automatically creates a TheHive case | Complete | Integration HTTP `201` and Case `#216` |
+| A Cortex analyzer enriches an indicator from the case workflow | Complete | `VirusTotal_GetReport_3_1` status `Success` with a returned report payload |
+| Record the alert → case → enrichment pipeline | Complete | Final log, Case `#216`, observable tags, and Cortex report screenshots |
+| Stretch: auto-trigger enrichment during case creation | Complete | Automatic observable, Cortex execution, and enrichment returned to TheHive |
 
 ## Troubleshooting and engineering decisions
 
@@ -186,7 +205,7 @@ The successful result required work across several layers:
 - Cortex submission returned temporary HTTP `404` responses while the new observable became available.
 - Python syntax, indentation, response-shape, file-mode, and subprocess issues were corrected.
 - The enrichment helper initially lacked executable permissions.
-- VMware NAT and agent connectivity interruptions temporarily disrupted validation.
+- A VMware NAT/DHCP outage blocked the manager and Cortex from reaching VirusTotal; restarting `VMnetDHCP` and `VMware NAT Service` restored the NAT path before the successful final run.
 - Triggering on Wazuh rule `86601` alone created too many cases because that rule represents more than the intended custom Suricata signature.
 
 ![Integration troubleshooting showing permission and readiness errors](./screenshots/troubleshooting/01-integration-retry-and-permission-errors.png)
@@ -225,7 +244,7 @@ The exact deployed scripts contained environment-specific values and underwent l
 - A known test hash returned a detailed enrichment report.
 - A live Suricata/Wazuh alert automatically created a structured TheHive case.
 - The source IP was automatically added as an observable.
-- The Cortex analyzer was automatically submitted and completed successfully.
+- `VirusTotal_GetReport_3_1` executed automatically and returned its enrichment report to TheHive.
 - Authentication, permission, readiness, execution, connectivity, and case-volume issues were investigated.
 - The limitations of broad rule-based triggering and private-IP enrichment were documented.
 
@@ -247,4 +266,5 @@ The exact deployed scripts contained environment-specific values and underwent l
 ## What I learned
 
 End-to-end automation is a sequence of independently testable contracts. The alert must contain the right fields, the bridge must authenticate, the case API must accept the payload, the observable must become queryable, and Cortex must receive a valid analyzer request. Verifying each boundary separately made the final workflow reliable enough to demonstrate and revealed the next engineering priorities: precise filtering, deduplication, bounded retries, least privilege, and safer secret management.
+
 
