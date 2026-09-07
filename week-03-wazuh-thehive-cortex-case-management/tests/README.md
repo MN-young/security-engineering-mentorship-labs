@@ -78,15 +78,20 @@ OBSERVABLE_SUCCESS
 CORTEX_SUCCESS ... HTTP=201
 ```
 
-Then verify in the interfaces:
+Then verify in the interfaces using the fresh final run:
 
-1. A new TheHive case was created by the Wazuh integration.
+1. TheHive Case `#216` was created by the Wazuh integration.
 2. The title identifies rule `86601` and the port-scan signature.
 3. The description contains rule, signature, agent, source, destination, and timestamp fields.
 4. The source IP appears as a case observable.
-5. Cortex Jobs History shows `VirusTotal_GetReport_3_1` with status `Success` for that observable.
+5. Cortex Job Details shows `VirusTotal_GetReport_3_1` with status `Success` and an actual report payload for that observable.
+6. TheHive shows the returned enrichment on the same observable: `VT:GetReport="12 resolution(s)"` and `VT:GetReport="0/89"`.
 
-## 6. Negative and tuning tests
+## 6. Verify network recovery before the final run
+
+If Cortex reports `Cannot connect to host www.virustotal.com:443`, verify the VMware NAT gateway, external reachability, DNS, HTTPS, and Cortex-container egress. The final successful run was performed only after restarting `VMnetDHCP` and `VMware NAT Service` and confirming those checks.
+
+## 7. Negative and tuning tests
 
 A production-oriented revision should also validate:
 
@@ -97,3 +102,4 @@ A production-oriented revision should also validate:
 - an analyzer outage records an actionable integration error.
 
 These tuning tests describe the next hardening step; they are not claimed as completed Week 3 controls.
+
