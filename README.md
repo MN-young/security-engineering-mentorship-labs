@@ -11,7 +11,8 @@ Each project records the architecture, implementation, validation evidence, dete
 | 1 | [Wazuh Multi-Agent SIEM and Detection Engineering Lab](./week-01-wazuh-multi-agent-lab/README.md) | SIEM deployment, endpoint monitoring, FIM, custom detections | Complete |
 | 2 | [Suricata and Wazuh Network Detection](./week-02-suricata-wazuh-integration/README.md) | Network IDS integration, internal SYN-scan detection, SIEM validation | Complete |
 | 3 | [Wazuh, TheHive and Cortex Case Management](./week-03-wazuh-thehive-cortex-case-management/README.md) | Automated case creation, observable enrichment, SOAR-style orchestration | Complete |
-| 4–8 | Additional security engineering labs | To be documented | Planned |
+| 4 | [Attack Simulation and Full-Chain Validation](./week-4-attack-simulation/README.md) | Atomic Red Team, MITRE ATT&CK validation, detection gaps, pipeline repair | Complete |
+| 5–8 | Additional security engineering labs | To be documented | Planned |
 
 ## Technologies and practices
 
@@ -29,6 +30,8 @@ Each project records the architecture, implementation, validation evidence, dete
 - Security API integration and Python automation
 - Log and alert analysis
 - Controlled validation with Nmap
+- Atomic Red Team and MITRE ATT&CK
+- Detection coverage assessment and regression testing
 - Technical troubleshooting and documentation
 
 ## Repository goals

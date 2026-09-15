@@ -42,18 +42,12 @@ The most important finding was a real Cron detection failure. The host produced 
 | Windows endpoint | `192.168.244.130` | T1046 scan target |
 | Wazuh Manager / TheHive / Cortex | `192.168.244.128` | SIEM analysis, case management, and enrichment |
 
-```mermaid
-flowchart LR
-    A["Atomic Red Team on wazuh-linux-agent"] --> B{"Activity type"}
-    B -->|"Network"| C["Suricata"]
-    B -->|"Host"| D["Linux logs / Wazuh Agent"]
-    C --> E["Wazuh Manager"]
-    D --> E
-    E --> F{"Existing TheHive routing scope"}
-    F -->|"Rule 86601 port-scan flow"| G["TheHive Case"]
-    G --> H["IP Observable"]
-    H --> I["Cortex / VirusTotal"]
-    F -->|"Other host rules"| J["Remain in Wazuh unless routing is expanded"]
+```text
+                                  ┌── Suricata ──┐
+Atomic Red Team ── activity ──────┤              ├── Wazuh Manager
+                                  └─ Linux logs ─┘         │
+                                                           ├── Rule 86601 ── TheHive ── Cortex/VirusTotal
+                                                           └── Other rules ── remain in Wazuh unless routed
 ```
 
 The Week 3 bridge was deliberately scoped to the port-scan workflow processed by Wazuh rule `86601`. A Wazuh host alert therefore was not automatically expected to create a TheHive case. This boundary is important when interpreting the T1053 result.
@@ -61,6 +55,10 @@ The Week 3 bridge was deliberately scoped to the port-scan workflow processed by
 ## Safety and baseline
 
 Before installing Atomic Red Team, the Linux endpoint was snapshotted as `Pre-Week4-Atomic-Linux`. The baseline confirmed Ubuntu `24.04.4 LTS`, hostname `wazuh-linux-agent`, address `192.168.244.129`, and active Wazuh Agent and Suricata services.
+
+![Pre-Week 4 Atomic Red Team snapshot](./evidence/00-baseline/01-pre-week4-atomic-snapshot.png)
+
+![Known-good Linux endpoint baseline](./evidence/00-baseline/02-linux-endpoint-baseline.png)
 
 Atomic techniques were executed only in the isolated lab. The credential-file test used a dummy `.git-credentials` file containing fake values under `/tmp/atomic-git-creds-test`; no real credential was searched or published.
 
@@ -83,6 +81,8 @@ Atomic Red Team was installed at:
 └── invoke-atomicredteam
 ```
 
+![PowerShell modules and Atomic Red Team installed](./evidence/01-atomic-installation/05-modules-and-atomic-installed.png)
+
 The installation and test-selection issues—including the missing repository package, module parameter error, and the T1087 parent/sub-technique path distinction—are preserved in [setup.md](./documentation/setup.md) and [troubleshooting.md](./documentation/troubleshooting.md).
 
 ## Techniques selected
@@ -94,6 +94,8 @@ The installation and test-selection issues—including the missing repository pa
 | [T1053.003](./attack-tests/T1053.003.md) | T1053.003-1 — Cron: replace crontab with referenced file | Persistence | Test Cron telemetry, decoding, and live detection |
 | [T1552.001](./attack-tests/T1552.001.md) | T1552.001-25 — Search for Git Credential Files | Credential Access | Test credential-file discovery coverage safely |
 | [T1070.004](./attack-tests/T1070.004.md) | T1070.004-1 — Delete a Single File | Defense Evasion | Test whether deletion is visible within current FIM scope |
+
+![Five selected ATT&CK technique folders verified](./evidence/01-atomic-installation/08-five-techniques-verified.png)
 
 ## Test methodology
 
@@ -126,12 +128,20 @@ src_ip:       192.168.244.129
 dest_ip:      192.168.244.130
 ```
 
+![Suricata detects the Atomic Nmap port scan](./evidence/02-T1046/07-suricata-port-scan-detected.png)
+
 Wazuh ingested the alert as rule `86601`. The existing Week 3 automation then created TheHive Case `#231`, added `192.168.244.129` as an observable, and returned Cortex/VirusTotal enrichment tags including:
+
+![Wazuh Rule 86601 detection details](./evidence/02-T1046/08-wazuh-rule-86601-detected.png)
+
+![Automatically created TheHive Case 231](./evidence/02-T1046/09-thehive-case-231.png)
 
 ```text
 VT:GetReport="12 resolution(s)"
 VT:GetReport="0/89"
 ```
+
+![Automatic observable and VirusTotal enrichment](./evidence/02-T1046/10-observable-virustotal-enrichment.png)
 
 ```text
 Atomic T1046-12
@@ -162,6 +172,8 @@ The artifact `/tmp/art.sh` existed and contained the test script. A separate Ato
 
 Wazuh returned no relevant result even though the artifact existed and the agent was healthy. Suricata observed related traffic, including activity involving `8.8.8.8`, but correctly produced no malicious alert for ordinary ICMP traffic. No TheHive case was created.
 
+![T1059.004 produced no matching Wazuh detection](./evidence/03-T1059-004/04-wazuh-no-detection.png)
+
 **Result: COVERAGE GAP** — the current endpoint telemetry does not provide sufficient Linux process/shell execution visibility. The primary recommendation is `auditd` or equivalent process-execution telemetry.
 
 ### T1053.003 — Cron: pass after pipeline fix
@@ -177,6 +189,10 @@ Linux logs repeatedly recorded:
 ```text
 CRON[...] (sysadmin) CMD (/tmp/evil.sh)
 ```
+
+![Atomic Cron persistence executed](./evidence/04-T1053-003/before-fix/01-cron-persistence-executed.png)
+
+![Cron telemetry exists on the Linux endpoint](./evidence/04-T1053-003/before-fix/02-host-cron-telemetry-present.png)
 
 However, Wazuh returned no matching alert. The Wazuh Agent and logcollector were running and journald collection was configured, so the test moved from a normal gap to a pipeline investigation.
 
@@ -196,6 +212,8 @@ Phase 2: Completed decoding
 No decoder matched.
 ```
 
+![Before the fix, Wazuh logtest reports no decoder matched](./evidence/04-T1053-003/root-cause/01-no-decoder-matched.png)
+
 The fix added three pieces:
 
 1. A dedicated `cron-service` decoder extracting `service_user` and `command`.
@@ -214,7 +232,11 @@ MITRE: T1053.003
 Alert to be generated.
 ```
 
+![After the fix, Wazuh logtest matches Rule 111801](./evidence/04-T1053-003/after-fix/01-logtest-rule-111801-success.png)
+
 Live manager events then confirmed rule `111801` for `wazuh-linux-agent`, command `/tmp/evil.sh`, and user `sysadmin`.
+
+![Live Rule 111801 event from wazuh-linux-agent](./evidence/04-T1053-003/after-fix/05-live-rule-111801-event-details.png)
 
 **Result: PASS AFTER FIX**
 
@@ -232,6 +254,10 @@ The test used only a fake credential file:
 
 Atomic `T1552.001-25` was restricted to that directory and completed with exit code `0`. Wazuh produced no relevant alert. Suricata was not expected to detect a local filesystem search, and without a Wazuh alert no TheHive case was expected.
 
+![Safe fake credential file prepared in an isolated directory](./evidence/05-T1552-001/02-dummy-git-credential-prepared.png)
+
+![T1552.001 Atomic test completed successfully](./evidence/05-T1552-001/03-atomic-execution-success.png)
+
 **Result: COVERAGE GAP** — credential-file discovery behavior is not currently covered.
 
 ### T1070.004 — File Deletion: FIM-scope gap
@@ -243,6 +269,10 @@ After resolving the missing-file prerequisite, Atomic `T1070.004-1` deleted:
 ```
 
 The test returned exit code `0`, and `Test-Path` returned `False`. Wazuh produced no T1070.004 detection. Inspection showed that FIM monitored `/etc`, `/usr/bin`, `/usr/sbin`, and `/boot`, but not `/tmp`.
+
+![T1070.004 deletes the test file successfully](./evidence/06-T1070-004/04-file-deletion-success.jpg)
+
+![Existing FIM paths do not include the test location under tmp](./evidence/06-T1070-004/06-file-outside-fim-scope.jpg)
 
 **Result: COVERAGE GAP** — the file was outside the configured FIM scope. The lab was not changed solely to make the test green; whether selected temporary paths merit monitoring should be decided through risk and noise analysis.
 
@@ -309,6 +339,9 @@ See [documentation/troubleshooting.md](./documentation/troubleshooting.md).
 | --- | --- |
 | [`attack-tests/`](./attack-tests/) | Technique-by-technique execution, evidence, and outcome |
 | [`detection-engineering/`](./detection-engineering/) | Cron decoder, rule `111801`, and syslog collection fix |
+| [`decoders/cron-service-decoder.xml`](./decoders/cron-service-decoder.xml) | Reusable sanitized decoder artifact |
+| [`rules/cron-rule-111801.xml`](./rules/cron-rule-111801.xml) | Reusable sanitized Wazuh rule artifact |
+| [`configs/linux-syslog-localfile.xml`](./configs/linux-syslog-localfile.xml) | Linux syslog collection block used by the fix |
 | [`documentation/setup.md`](./documentation/setup.md) | Baseline, safe testing, and Atomic installation |
 | [`documentation/troubleshooting.md`](./documentation/troubleshooting.md) | Full problem → investigation → fix history |
 | [`documentation/lessons-learned.md`](./documentation/lessons-learned.md) | Engineering lessons from the tests |

@@ -7,17 +7,26 @@ Generate a level-8 Wazuh alert for events decoded as `cron-service`, preserve th
 ## Sanitized rule
 
 ```xml
-<group name="local,cron,persistence,">
-  <rule id="111801" level="8">
+<group name="cron-service,">
+  <rule id="111800" level="0">
     <decoded_as>cron-service</decoded_as>
+    <description>Journald logs for CRON.</description>
+  </rule>
+
+  <rule id="111801" level="8">
+    <if_sid>111800</if_sid>
+    <match>CMD</match>
     <description>CRON: The $(service_user) user executed ($(command)) on $(hostname).</description>
     <mitre>
       <id>T1053.003</id>
     </mitre>
-    <group>cron,persistence,</group>
   </rule>
 </group>
 ```
+
+The reusable XML is available at [rules/cron-rule-111801.xml](../rules/cron-rule-111801.xml).
+
+![Rule 111801 with level and ATT&CK mapping](../evidence/04-T1053-003/root-cause/06-rule-111801-added.png)
 
 ## Offline validation
 
@@ -45,6 +54,10 @@ service_user:    sysadmin
 command:         /tmp/evil.sh
 rule.mitre.id:   T1053.003
 ```
+
+![Live Rule 111801 event details](../evidence/04-T1053-003/after-fix/05-live-rule-111801-event-details.png)
+
+![Live level-8 and MITRE T1053.003 fields](../evidence/04-T1053-003/after-fix/06-mitre-t1053-003-validation.png)
 
 ## Scope and tuning
 

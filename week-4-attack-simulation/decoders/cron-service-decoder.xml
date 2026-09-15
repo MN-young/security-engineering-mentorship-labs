@@ -1,0 +1,10 @@
+<!-- Add to the Wazuh manager's local decoder configuration. -->
+<decoder name="cron-service">
+  <program_name>cron|CRON</program_name>
+</decoder>
+
+<decoder name="cron-service1">
+  <parent>cron-service</parent>
+  <regex type="pcre2">^\((\w+)\) CMD \((.*)\)$</regex>
+  <order>service_user,command</order>
+</decoder>

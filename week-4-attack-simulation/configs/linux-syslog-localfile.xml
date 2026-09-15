@@ -1,0 +1,5 @@
+<!-- Add inside ossec_config on the Linux endpoint. -->
+<localfile>
+  <log_format>syslog</log_format>
+  <location>/var/log/syslog</location>
+</localfile>

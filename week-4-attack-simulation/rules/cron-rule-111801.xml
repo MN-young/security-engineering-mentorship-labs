@@ -1,0 +1,16 @@
+<!-- Add to the Wazuh manager's local rules configuration. -->
+<group name="cron-service,">
+  <rule id="111800" level="0">
+    <decoded_as>cron-service</decoded_as>
+    <description>Journald logs for CRON.</description>
+  </rule>
+
+  <rule id="111801" level="8">
+    <if_sid>111800</if_sid>
+    <match>CMD</match>
+    <description>CRON: The $(service_user) user executed ($(command)) on $(hostname).</description>
+    <mitre>
+      <id>T1053.003</id>
+    </mitre>
+  </rule>
+</group>

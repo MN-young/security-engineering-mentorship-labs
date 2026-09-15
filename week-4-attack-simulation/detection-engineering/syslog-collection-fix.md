@@ -17,6 +17,8 @@ The endpoint was checked specifically:
 
 Fresh events were consistently visible in `/var/log/syslog`, but that file was not present in the endpoint's monitored `<localfile>` blocks.
 
+![Fresh Cron telemetry in var-log-syslog](../evidence/04-T1053-003/after-fix/02-syslog-live-source-identified.png)
+
 ## Fix
 
 The following block was added inside the endpoint's `<ossec_config>`:
@@ -28,11 +30,17 @@ The following block was added inside the endpoint's `<ossec_config>`:
 </localfile>
 ```
 
+The reusable configuration fragment is available at [configs/linux-syslog-localfile.xml](../configs/linux-syslog-localfile.xml).
+
+![Explicit syslog localfile block added](../evidence/04-T1053-003/after-fix/03-syslog-collection-added.png)
+
 The Wazuh Agent configuration was validated and the service was restarted.
 
 ## Result
 
 Live manager and dashboard records then contained rule `111801`, level `8`, decoder `cron-service`, user `sysadmin`, command `/tmp/evil.sh`, and MITRE `T1053.003` for `wazuh-linux-agent`.
+
+![Live alerts.json result after the collection fix](../evidence/04-T1053-003/after-fix/04-live-rule-111801-alerts-json.png)
 
 ## Lesson
 
