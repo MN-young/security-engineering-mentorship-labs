@@ -12,7 +12,8 @@ Each project records the architecture, implementation, validation evidence, dete
 | 2 | [Suricata and Wazuh Network Detection](./week-02-suricata-wazuh-integration/README.md) | Network IDS integration, internal SYN-scan detection, SIEM validation | Complete |
 | 3 | [Wazuh, TheHive and Cortex Case Management](./week-03-wazuh-thehive-cortex-case-management/README.md) | Automated case creation, observable enrichment, SOAR-style orchestration | Complete |
 | 4 | [Attack Simulation and Full-Chain Validation](./week-4-attack-simulation/README.md) | Atomic Red Team, MITRE ATT&CK validation, detection gaps, pipeline repair | Complete |
-| 5–8 | Additional security engineering labs | To be documented | Planned |
+| 5 | [SOAR Automation and Analyst Handoff](./week-5-soar-automation/README.md) | Wazuh, Shuffle, VirusTotal, Slack, conditional response playbooks | Complete |
+| 6–8 | Additional security engineering labs | To be documented | Planned |
 
 ## Technologies and practices
 
@@ -31,6 +32,8 @@ Each project records the architecture, implementation, validation evidence, dete
 - Log and alert analysis
 - Controlled validation with Nmap
 - Atomic Red Team and MITRE ATT&CK
+- Shuffle SOAR and Slack alerting
+- Conditional playbooks and VirusTotal file-hash enrichment
 - Detection coverage assessment and regression testing
 - Technical troubleshooting and documentation
 
