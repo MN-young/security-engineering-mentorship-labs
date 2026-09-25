@@ -268,7 +268,7 @@ Two raw source screenshots were deliberately withheld because they expose the tr
 ## Repository map
 
 ```text
-week-6-appsec-wazuh-integration/
+week-06-appsec-wazuh-integration/
 ├── README.md
 ├── architecture/README.md
 ├── documentation/

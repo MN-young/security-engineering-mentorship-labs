@@ -11,9 +11,9 @@ Each project records the architecture, implementation, validation evidence, dete
 | 1 | [Wazuh Multi-Agent SIEM and Detection Engineering Lab](./week-01-wazuh-multi-agent-lab/README.md) | SIEM deployment, endpoint monitoring, FIM, custom detections | Complete |
 | 2 | [Suricata and Wazuh Network Detection](./week-02-suricata-wazuh-integration/README.md) | Network IDS integration, internal SYN-scan detection, SIEM validation | Complete |
 | 3 | [Wazuh, TheHive and Cortex Case Management](./week-03-wazuh-thehive-cortex-case-management/README.md) | Automated case creation, observable enrichment, SOAR-style orchestration | Complete |
-| 4 | [Attack Simulation and Full-Chain Validation](./week-4-attack-simulation/README.md) | Atomic Red Team, MITRE ATT&CK validation, detection gaps, pipeline repair | Complete |
-| 5 | [SOAR Automation and Analyst Handoff](./week-5-soar-automation/README.md) | Wazuh, Shuffle, VirusTotal, Slack, conditional response playbooks | Complete |
-| 6 | [AppSec Findings to SOC Visibility](./week-6-appsec-wazuh-integration/README.md) | GitHub Actions, Semgrep, pip-audit, Wazuh, Shuffle, Slack | Complete |
+| 4 | [Attack Simulation and Full-Chain Validation](./week-04-attack-simulation/README.md) | Atomic Red Team, MITRE ATT&CK validation, detection gaps, pipeline repair | Complete |
+| 5 | [SOAR Automation and Analyst Handoff](./week-05-soar-automation/README.md) | Wazuh, Shuffle, VirusTotal, Slack, conditional response playbooks | Complete |
+| 6 | [AppSec Findings to SOC Visibility](./week-06-appsec-wazuh-integration/README.md) | GitHub Actions, Semgrep, pip-audit, Wazuh, Shuffle, Slack | Complete |
 | 7–8 | Additional security engineering labs | To be documented | Planned |
 
 ## Technologies and practices

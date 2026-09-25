@@ -224,7 +224,7 @@ See the [evidence catalog and exclusion manifest](./evidence/README.md).
 ## Repository map
 
 ```text
-week-5-soar-automation/
+week-05-soar-automation/
 ├── README.md
 ├── architecture/
 │   ├── decision-flow.md
