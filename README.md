@@ -13,7 +13,8 @@ Each project records the architecture, implementation, validation evidence, dete
 | 3 | [Wazuh, TheHive and Cortex Case Management](./week-03-wazuh-thehive-cortex-case-management/README.md) | Automated case creation, observable enrichment, SOAR-style orchestration | Complete |
 | 4 | [Attack Simulation and Full-Chain Validation](./week-4-attack-simulation/README.md) | Atomic Red Team, MITRE ATT&CK validation, detection gaps, pipeline repair | Complete |
 | 5 | [SOAR Automation and Analyst Handoff](./week-5-soar-automation/README.md) | Wazuh, Shuffle, VirusTotal, Slack, conditional response playbooks | Complete |
-| 6–8 | Additional security engineering labs | To be documented | Planned |
+| 6 | [AppSec Findings to SOC Visibility](./week-6-appsec-wazuh-integration/README.md) | GitHub Actions, Semgrep, pip-audit, Wazuh, Shuffle, Slack | Complete |
+| 7–8 | Additional security engineering labs | To be documented | Planned |
 
 ## Technologies and practices
 
@@ -34,6 +35,8 @@ Each project records the architecture, implementation, validation evidence, dete
 - Atomic Red Team and MITRE ATT&CK
 - Shuffle SOAR and Slack alerting
 - Conditional playbooks and VirusTotal file-hash enrichment
+- GitHub Actions, Semgrep SAST, and pip-audit
+- AppSec finding ingestion and SOC alert routing
 - Detection coverage assessment and regression testing
 - Technical troubleshooting and documentation
 
