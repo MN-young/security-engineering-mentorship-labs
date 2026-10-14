@@ -4,16 +4,16 @@ The verified path is local Terraform static scanning on `iac-lab`, normalization
 
 ```mermaid
 flowchart LR
- A[Terraform source on iac-lab] --> B[Checkov]
- B --> C[Raw JSON report]
- C --> D[Compact JSON lines]
- D --> E[/var/log/checkov/checkov.log]
- E --> F[Agent localfile JSON]
- F --> G[Manager JSON decoder]
- G --> H[110700 Level 5 parent]
- H --> I[110701 Level 12 failed child]
- I --> J[alerts.json]
- J --> K[Indexed dashboard]
+ A["Terraform source on iac-lab"] --> B["Checkov"]
+ B --> C["Raw JSON report"]
+ C --> D["Compact JSON lines"]
+ D --> E["/var/log/checkov/checkov.log"]
+ E --> F["Agent localfile JSON"]
+ F --> G["Manager JSON decoder"]
+ G --> H["110700 Level 5 parent"]
+ H --> I["110701 Level 12 failed child"]
+ I --> J["alerts.json"]
+ J --> K["Indexed dashboard"]
 ```
 
 `run-checkov-wazuh.sh` automated the local scan, export, transformation and append stages. The historical parent matches `integration=checkov`; its child matches `result=FAILED`. The child applies to Checkov failures generally, so S3 and VPC alerts are expected. Level 12 is the Wazuh lab classification, not a Checkov vendor severity value.
