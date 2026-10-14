@@ -8,19 +8,19 @@ This folder is the Week 7 portfolio record alongside Weeks 1–6 in `MN-young/se
 
 ```mermaid
 flowchart TD
-  A[Terraform VPC, SG and S3 source] --> B[Local Checkov scan]
-  B --> C[JSON report]
-  C --> D[Normalize failed findings: one compact event per line]
-  D --> E[/var/log/checkov/checkov.log on iac-lab]
-  E --> F[Wazuh agent localfile JSON collection]
-  F --> G[Manager JSON decoding]
-  G --> H[Rule 110700 parent: Level 5]
-  H --> I[Rule 110701 FAILED child: Level 12]
-  I --> J[alerts.json and dashboard]
-  B --> K[Review CKV_AWS_24]
-  K --> L[Restrict SSH to 10.7.0.0/16]
-  L --> M[terraform fmt and validate]
-  M --> N[Focused CKV_AWS_24 rescan passes]
+  A["Terraform VPC, SG and S3 source"] --> B["Local Checkov scan"]
+  B --> C["JSON report"]
+  C --> D["Normalize failed findings: one compact event per line"]
+  D --> E["/var/log/checkov/checkov.log on iac-lab"]
+  E --> F["Wazuh agent localfile JSON collection"]
+  F --> G["Manager JSON decoding"]
+  G --> H["Rule 110700 parent: Level 5"]
+  H --> I["Rule 110701 FAILED child: Level 12"]
+  I --> J["alerts.json and dashboard"]
+  B --> K["Review CKV_AWS_24"]
+  K --> L["Restrict SSH to 10.7.0.0/16"]
+  L --> M["terraform fmt and validate"]
+  M --> N["Focused CKV_AWS_24 rescan passes"]
 ```
 
 The completed ingestion path ran locally on `iac-lab`. A separate GitHub Actions stretch workflow ran Checkov and failed on remaining findings. It is documented separately from the local Wazuh path. See [architecture](architecture/README.md).
@@ -135,7 +135,7 @@ The historical standalone workflow triggered on Terraform/workflow changes, inst
 
 _Expanded CI output shows an S3 lifecycle failure and exit code 1. Node.js/runner notices are environment annotations, not the reason the security job failed._
 
-This evidence updates the older manual's unverified-execution status. It does not prove automatic GitHub Actions-to-Wazuh delivery. This portfolio draft adds no active workflow and changes no standalone source. See [CI stretch](documentation/ci-stretch.md).
+This evidence updates the older manual's unverified-execution status. It does not prove automatic GitHub Actions-to-Wazuh delivery. This portfolio record adds no active workflow and changes no standalone source. See [CI stretch](documentation/ci-stretch.md).
 
 ## Troubleshooting highlights
 
