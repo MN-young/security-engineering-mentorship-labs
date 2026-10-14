@@ -14,7 +14,8 @@ Each project records the architecture, implementation, validation evidence, dete
 | 4 | [Attack Simulation and Full-Chain Validation](./week-04-attack-simulation/README.md) | Atomic Red Team, MITRE ATT&CK validation, detection gaps, pipeline repair | Complete |
 | 5 | [SOAR Automation and Analyst Handoff](./week-05-soar-automation/README.md) | Wazuh, Shuffle, VirusTotal, Slack, conditional response playbooks | Complete |
 | 6 | [AppSec Findings to SOC Visibility](./week-06-appsec-wazuh-integration/README.md) | GitHub Actions, Semgrep, pip-audit, Wazuh, Shuffle, Slack | Complete |
-| 7–8 | Additional security engineering labs | To be documented | Planned |
+| 7 | [Terraform, Checkov and Wazuh IaC Security](./week-07-terraform-checkov-wazuh/README.md) | Static IaC scanning, local Wazuh ingestion, focused SSH remediation | Core lab complete; CI stretch attempted |
+| 8 | Additional security engineering lab | To be documented | Planned |
 
 ## Technologies and practices
 
@@ -37,6 +38,7 @@ Each project records the architecture, implementation, validation evidence, dete
 - Conditional playbooks and VirusTotal file-hash enrichment
 - GitHub Actions, Semgrep SAST, and pip-audit
 - AppSec finding ingestion and SOC alert routing
+- Terraform, Checkov and IaC finding normalization
 - Detection coverage assessment and regression testing
 - Technical troubleshooting and documentation
 
