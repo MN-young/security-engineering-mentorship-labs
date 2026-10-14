@@ -1,0 +1,6 @@
+<!-- Merge inside the existing ossec_config on the IaC agent.
+     This is a snippet, not a replacement ossec.conf. -->
+<localfile>
+  <log_format>json</log_format>
+  <location>/var/log/checkov/checkov.log</location>
+</localfile>

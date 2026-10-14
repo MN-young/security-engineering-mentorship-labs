@@ -1,0 +1,24 @@
+# Runtime files and unreviewed scan output
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+*.tfvars.json
+crash.log
+crash.*.log
+reports/*
+!reports/README.md
+__pycache__/
+*.pyc
+.venv/
+# Keep .terraform.lock.hcl when a reviewed provider selection is available.
+
+# Additional secret and generated files
+.env
+*.env
+*.pem
+*.key
+*.tfvars.json
+*.auto.tfvars.json
+checkov-output.json
