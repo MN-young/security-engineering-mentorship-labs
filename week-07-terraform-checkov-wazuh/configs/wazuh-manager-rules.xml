@@ -1,0 +1,17 @@
+<!-- Historical rules from attached manual section 8, corroborated by screenshot 062.
+Not a complete manager-file export. Preserve existing Week 6 rules when merging. -->
+<group name="checkov,iac,terraform,cloud_security,">
+  <rule id="110700" level="5">
+    <decoded_as>json</decoded_as>
+    <field name="integration">checkov</field>
+    <description>Checkov IaC security finding received</description>
+    <group>checkov,iac,terraform,cloud_security,</group>
+  </rule>
+ 
+  <rule id="110701" level="12">
+    <if_sid>110700</if_sid>
+    <field name="result">FAILED</field>
+    <description>Checkov FAILED: $(check_id) - $(check_name) | Resource: $(resource)</description>
+    <group>checkov,iac,terraform,cloud_security,misconfiguration,</group>
+  </rule>
+</group>
