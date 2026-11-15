@@ -1,0 +1,11 @@
+<!-- Screenshot E66 transcription; lab-specific historical example, not a VM export. -->
+<group name="week8,dvwa,reconnaissance,">
+  <rule id="110750" level="8">
+    <if_sid>86601</if_sid>
+    <field name="src_ip" type="pcre2">^192\.168\.244\.129$</field>
+    <field name="dest_ip" type="pcre2">^192\.168\.244\.131$</field>
+    <field name="alert.signature" type="pcre2">^LOCAL TCP Port Scan Detected$</field>
+    <description>Week 8 DVWA reconnaissance detected - Linux Agent scanned DVWA</description>
+    <group>week8,dvwa,reconnaissance,</group>
+  </rule>
+</group>

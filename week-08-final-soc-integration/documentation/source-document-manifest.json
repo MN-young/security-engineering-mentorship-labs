@@ -1,0 +1,20 @@
+[
+  {
+    "original_filename": "Task48_SOC_Architecture_Detailed_Personal.docx",
+    "repository_path": "documentation/task-48-architecture-overview.docx",
+    "sha256": "ce72f1a23c49555ceab20edb8d171aa37ed0ec34b05b4ca38826c681678cea82",
+    "unchanged": true
+  },
+  {
+    "original_filename": "Task49_DVWA_Reconnaissance_Runbook_REVISED (1).docx",
+    "repository_path": "documentation/task-49-incident-response-runbook.docx",
+    "sha256": "729fee9eddd5ee6d8f3d8bcdcc6127c8cf02372143a27bca99ef09bcaf358f7e",
+    "unchanged": true
+  },
+  {
+    "original_filename": "word/media/image1.png inside Task48_SOC_Architecture_Detailed_Personal.docx",
+    "repository_path": "architecture/soc-architecture.png",
+    "sha256": "b36e589dd5ba23da50ccac3da89eb4620378486df2c5c4209e32652f97525d34",
+    "unchanged": true
+  }
+]
