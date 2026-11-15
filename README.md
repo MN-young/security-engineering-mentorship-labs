@@ -15,7 +15,11 @@ Each project records the architecture, implementation, validation evidence, dete
 | 5 | [SOAR Automation and Analyst Handoff](./week-05-soar-automation/README.md) | Wazuh, Shuffle, VirusTotal, Slack, conditional response playbooks | Complete |
 | 6 | [AppSec Findings to SOC Visibility](./week-06-appsec-wazuh-integration/README.md) | GitHub Actions, Semgrep, pip-audit, Wazuh, Shuffle, Slack | Complete |
 | 7 | [Terraform, Checkov and Wazuh IaC Security](./week-07-terraform-checkov-wazuh/README.md) | Static IaC scanning, local Wazuh ingestion, focused SSH remediation | Core lab complete; CI stretch attempted |
-| 8 | Additional security engineering lab | To be documented | Planned |
+| 8 | [Final SOC Integration and End-to-End Security Monitoring](./week-08-final-soc-integration/README.md) | DVWA, SQLi detection, recon-to-Slack correlation, AppSec/IaC regression checks | Technical validation documented; case/enrichment path limited |
+
+## Final integration
+
+Week 8 brings network detection, application testing and earlier AppSec/IaC ingestion into one SOC portfolio. Reconnaissance was traced through Suricata, Wazuh, Shuffle and Slack. SQL injection was demonstrated and detected in Suricata/Wazuh; the www-data escalation attempt failed. Fresh TheHive/Cortex case creation and enrichment remained limited. The eight-week series preserves verified results, troubleshooting and unresolved gaps in each project record.
 
 ## Technologies and practices
 
