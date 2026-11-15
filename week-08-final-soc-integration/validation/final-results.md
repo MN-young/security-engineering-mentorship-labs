@@ -10,7 +10,7 @@ This record separates the historical lab's technical outcomes from the prepared 
 | 47 regressions | AppSec synthetic and live tests, CI gate rerun, Checkov finding visibility | 100201 L10 / 100203 L12 / 110701 L12 retained; CI-to-Wazuh automation unproven; Checkov scan completeness limited by API DNS error |
 | 48 architecture | Final detailed Task 48 overview and original diagram supplied; screenshot/source host-placement discrepancy disclosed | Original DOCX and embedded PNG retained unchanged; Markdown companion prepared |
 | 49 IR runbook | Revised four-section Task 49 source supplied; authorized test required no containment | Original DOCX unchanged; faithful Markdown companion; four major sections retained |
-| 50 handoff | Evidence ZIP and handoff supplied | Project documentation, final Word originals and evidence navigation prepared; recording absent |
+| 50 handoff | Evidence ZIP and handoff supplied | Project documentation, final Word originals and evidence navigation prepared |
 
 ## Correlated final event
 
@@ -25,9 +25,17 @@ This record separates the historical lab's technical outcomes from the prepared 
 
 The base-detection and final notification screenshots represent checkpoints across the sequence, not a complete raw event export from every system. The identical final timestamp is visible in manager, Shuffle and Slack. The channel name #soc-alerts is handoff context; its header is absent from the crop.
 
+![Wazuh manager logs the targeted Level 8 alert](../evidence/wazuh/E70-2026-10-19-170043.png)
+
+*E70: Two custom Rule 110750 Level 8 alerts; final event 15:56:48.758+0000 matches Shuffle and Slack.*
+
+![Matching Slack notification with Wazuh Rule 110750](../evidence/slack/E58-2026-10-19-170611.png)
+
+*E58: Slack notification matches Rule 110750 Level 8 and final manager event timestamp; destination channel reported by handoff, channel label not visible in crop.*
+
 ## Explicit limits
 
-No successful privilege escalation, SQLi-to-Slack end-to-end notification, fresh Week 8 automated case/enrichment, final completion of every Shuffle branch, deliberate severity conversion, complete Checkov scan success, fully secure application/IaC configuration, automatic CI-to-Wazuh delivery or final presentation recording is claimed. Operator sudo events do not prove container compromise. Earlier Week 6 and Week 7 achievements remain checkpoint-specific in their own records.
+No successful privilege escalation, SQLi-to-Slack end-to-end notification, fresh Week 8 automated case/enrichment, final completion of every Shuffle branch, deliberate severity conversion, complete Checkov scan success, fully secure application/IaC configuration, automatic CI-to-Wazuh delivery is claimed. Operator sudo events do not prove container compromise. Earlier Week 6 and Week 7 achievements remain checkpoint-specific in their own records.
 
 ## Local preparation checks
 
