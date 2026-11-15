@@ -24,39 +24,81 @@ The failures below are part of the lab's technical record. A correction is descr
 | Severity interpretation | Shuffle shows severity 3, manager/Slack show Level 8 (E71/E70/E58) | Values recorded independently | Mapping/origin unresolved |
 | Clock differences | Filename/display/log times differ | Correlate identical embedded final event timestamp | No unsupported timezone normalization |
 
-## Retained failed and intermediate evidence
+## Docker access and firewall checks
 
-![E13 troubleshooting](../evidence/troubleshooting/E13-2026-10-17-111513.png)
+The service responded locally before the network binding changed. The first firewall insertion failed with `Invalid rule number`; the next command listed the corrected source restriction. From Windows, ping succeeded while TCP/4280 failed. The [deployment guide](dvwa-deployment.md#verification-and-troubleshooting) shows the separate successful HTTP test from the allowed Linux Agent.
 
-_E13: iptables insertion first fails with Invalid rule number; corrected command and source-restricted rule are listed._
+![Failed and corrected Docker firewall rule insertion](../evidence/troubleshooting/E13-2026-10-17-111513.png)
 
-![E17 troubleshooting](../evidence/troubleshooting/E17-2026-10-17-122728.png)
+*E13: iptables insertion first fails with Invalid rule number; corrected command and source-restricted rule are listed.*
 
-_E17: Windows host can ping but TCP/4280 fails; consistent with source restriction, not proof of application failure._
+![Windows host ping succeeds but direct TCP connection fails](../evidence/troubleshooting/E17-2026-10-17-122728.png)
 
-![E35 troubleshooting](../evidence/troubleshooting/E35-2026-10-18-110149.png)
+*E17: Windows host can ping but TCP/4280 fails; consistent with source restriction, not proof of application failure.*
 
-_E35: Wazuh-to-Shuffle fails with No route to host and exit status 1; webhook token redacted._
+## Shuffle reachability, launcher and webhook processing
 
-![E38 troubleshooting](../evidence/troubleshooting/E38-2026-10-19-005049.png)
+The manager logged `No route to host` and exit status 1. A successful port check from the Shuffle host tested the local listener, while the missing launcher was a separate symptom. Later backend logs show webhook processing; they do not establish which repair fixed every earlier error or that every branch of the final run completed.
 
-_E38: Extensionless shuffle launcher initially missing while shuffle.py exists._
+![Wazuh cannot reach the Shuffle webhook; token redacted](../evidence/troubleshooting/E35-2026-10-18-110149.png)
 
-![E42 week-06-07-validation](../evidence/week-06-07-validation/E42-2026-10-19-010944.png)
+*E35: Wazuh-to-Shuffle fails with No route to host and exit status 1; webhook token redacted.*
 
-_E42: Checkov API name resolution fails, while normalized failed-check records are printed below; completeness of that scan is not established._
+![Shuffle frontend HTTP and port checks pass locally](../evidence/shuffle/E37-2026-10-19-004231.png)
 
-![E60 privilege-escalation](../evidence/privilege-escalation/E60-2026-10-19-154901.png)
+*E37: Shuffle frontend HTTP 200 and local port connectivity succeed; webhook delivery remains a separate test.*
 
-_E60: Broad grep returns Semgrep and generic Successful sudo to ROOT alerts; these do not establish www-data escalation or detection of its failed su attempt._
+![Missing extensionless Shuffle launcher](../evidence/troubleshooting/E38-2026-10-19-005049.png)
 
-![E62 troubleshooting](../evidence/troubleshooting/E62-2026-10-19-160806.png)
+*E38: Extensionless shuffle launcher initially missing while shuffle.py exists.*
 
-_E62: Initial custom Rule 110750 uses data-prefixed fields; later query produces no custom match._
+![Shuffle backend processes webhooks with tokens redacted](../evidence/shuffle/E41-2026-10-19-010118.png)
 
-![E64 troubleshooting](../evidence/troubleshooting/E64-2026-10-19-161402.png)
+*E41: Shuffle backend records webhook processing and finished executions; hook identifier and callback tokens redacted; unrelated execution status is not final recon-run completion proof.*
 
-_E64: Query for custom Rule 110750 returns no rows at this checkpoint; base detection existed._
+## Wazuh correlation before and after the field correction
+
+The first child rule used `data.` prefixes. The exact Rule 110750 query returned no rows even though base scan events were present. Removing the prefixes from the decoded field names produced the corrected rule; the [final event trace](../validation/final-results.md#correlated-final-event) shows the resulting notification.
+
+![Initial rule uses data-prefixed field names](../evidence/troubleshooting/E62-2026-10-19-160806.png)
+
+*E62: Initial custom Rule 110750 uses data-prefixed fields; later query produces no custom match.*
+
+![No match for custom rule before field correction](../evidence/troubleshooting/E64-2026-10-19-161402.png)
+
+*E64: Query for custom Rule 110750 returns no rows at this checkpoint; base detection existed.*
+
+![Corrected Wazuh Rule 110750 uses decoded field names](../evidence/wazuh/E66-2026-10-19-161928.png)
+
+*E66: Corrected Rule 110750 uses src_ip, dest_ip and alert.signature; parent 86601, Level 8.*
+
+## Case handling and Cortex quota
+
+TheHive responded to its status check, but the same log reports a zero-server Cortex quota. The handoff reports a licensing limitation, and no fresh Week 8 case or Cortex enrichment is verified.
+
+![TheHive logs report a zero Cortex server quota](../evidence/case-management/E36-2026-10-18-121122.png)
+
+*E36: TheHive API status responses coexist with a zero-server Cortex quota warning; new Week 8 case/enrichment success is unverified.*
+
+## Checkov DNS error and local ingestion
+
+The Checkov checkpoint shows a remote API DNS failure above the normalized findings. A matching Wazuh Checkov result demonstrates continued local ingestion; the error means this checkpoint cannot establish a complete fresh scan.
+
+![Checkov API DNS error and normalized output](../evidence/week-06-07-validation/E42-2026-10-19-010944.png)
+
+*E42: Checkov API name resolution fails, while normalized failed-check records are printed below; completeness of that scan is not established.*
+
+![Wazuh Rule 110701 Level 12 for Checkov](../evidence/week-06-07-validation/E43-2026-10-19-011349.png)
+
+*E43: Checkov finding reaches Wazuh Rule 110701 Level 12; generic sudo records in the broad query are unrelated.*
+
+## Why generic sudo alerts did not prove escalation
+
+The broad filter surfaced administrative sudo and Semgrep records. The container identity check in [Task 45](../README.md#privilege-escalation-outcome) is the relevant proof: it shows authentication failure and no change from `www-data`.
+
+![Broad log filter mixes unrelated sudo and Semgrep records](../evidence/privilege-escalation/E60-2026-10-19-154901.png)
+
+*E60: Broad grep returns Semgrep and generic Successful sudo to ROOT alerts; these do not establish www-data escalation or detection of its failed su attempt.*
 
 ## What remains to investigate
 
